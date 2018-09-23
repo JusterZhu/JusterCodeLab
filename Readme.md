@@ -28,5 +28,5 @@
 
 <div>
     <p>1.Solution:DelayMessageApp</p>
-    <img alt="MahApps.Metro" width="805" heigth="260" src="https://user-images.githubusercontent.com/658431/30968270-0e3a855e-a45f-11e7-862b-8d92ebd301ad.png">
+    <img alt="MahApps.Metro" width="805" heigth="260" src="https://github.com/JusterZhu/JusterCodeLab/blob/master/img/delay_message_app.png?raw=true">
 </div>
