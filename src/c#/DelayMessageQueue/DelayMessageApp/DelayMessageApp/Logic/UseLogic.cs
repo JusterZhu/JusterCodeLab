@@ -13,13 +13,16 @@ namespace DelayMessageApp.Logic
     {
         public static void Start()
         {
+            //1.Initialize queues of different granularity.
             IRingQueue<NewsModel> minuteRingQueue = new MinuteQueue<NewsModel>();
-            
+
+            //2.Open thread.
             var lstTasks = new List<Task>
             {
                 Task.Factory.StartNew(minuteRingQueue.Start)
             };
 
+            //3.Add tasks performed in different periods.
             minuteRingQueue.Add(5, new Action<NewsModel>((NewsModel newsObj) =>
             {
                 Console.WriteLine(newsObj.News);
@@ -39,6 +42,9 @@ namespace DelayMessageApp.Logic
             {
                 Console.WriteLine(newsObj.News);
             }), new NewsModel() { News = "Xi Jinping's visit to the US！" });
+
+            //3.Waiting for all tasks to complete is usually not completed. Because there is an infinite loop.
+            //F5 Run the program and see the effect.
             Task.WaitAll(lstTasks.ToArray());
             Console.Read();
         }

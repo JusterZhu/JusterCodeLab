@@ -23,7 +23,8 @@ namespace DelayMessageApp.Achieves.Base
         
         public BaseQueue(int arrayMax)
         {
-            if (arrayMax < 60 && arrayMax % 60 == 0) throw new Exception("Ring queue length cannot be less than 60 and is a multiple of 60 .");
+            if (arrayMax < 60 && arrayMax % 60 == 0)
+                throw new Exception("Ring queue length cannot be less than 60 and is a multiple of 60 .");
 
             ArrayMax = arrayMax;
         }
@@ -41,10 +42,7 @@ namespace DelayMessageApp.Achieves.Base
         public void Add(long delayTime, Action<T> action, T data,long id)
         {
             NextSlot(delayTime, out long cycle, out long pointer);
-            if (ArraySlot[pointer] == null)
-            {
-                ArraySlot[pointer] = new ConcurrentBag<BaseTask<T>>();
-            }
+            ArraySlot[pointer] =  ArraySlot[pointer] ?? (ArraySlot[pointer] = new ConcurrentBag<BaseTask<T>>());
             var baseTask = new BaseTask<T>(cycle, action, data,id);
             ArraySlot[pointer].Add(baseTask);
         }
@@ -91,43 +89,51 @@ namespace DelayMessageApp.Achieves.Base
         /// <param name="index">Task location.</param>
         private void NextSlot(long delayTime, out long cycle,out long index)
         {
-            var circle = delayTime / ArrayMax;
-            var second = delayTime % ArrayMax;
-            var current_pointer = GetPointer();
-            var queue_index = 0L;
+            try
+            {
+                var circle = delayTime / ArrayMax;
+                var second = delayTime % ArrayMax;
+                var current_pointer = GetPointer();
+                var queue_index = 0L;
 
-            if (delayTime - ArrayMax > ArrayMax)
-            {
-                circle = 1;
-            }
-            else if (second > ArrayMax)
-            {
-                circle += 1;
-            }
-
-            if (delayTime - circle * ArrayMax < ArrayMax)
-            {
-                second = delayTime - circle * ArrayMax;
-            }
-
-            if (current_pointer + delayTime >= ArrayMax)
-            {
-                cycle = (int)((current_pointer + delayTime) / ArrayMax);//计算出需要绕几圈
-                if (current_pointer + second - ArrayMax < 0)
+                if (delayTime - ArrayMax > ArrayMax)
                 {
-                    queue_index = current_pointer + second;//计算出任务位置
+                    circle = 1;
                 }
-                else if (current_pointer + second - ArrayMax > 0)
+                else if (second > ArrayMax)
                 {
-                    queue_index = current_pointer + second - ArrayMax;//计算出任务位置
+                    circle += 1;
                 }
+
+                if (delayTime - circle * ArrayMax < ArrayMax)
+                {
+                    second = delayTime - circle * ArrayMax;
+                }
+
+                if (current_pointer + delayTime >= ArrayMax)
+                {
+                    cycle = (int)((current_pointer + delayTime) / ArrayMax);
+                    if (current_pointer + second - ArrayMax < 0)
+                    {
+                        queue_index = current_pointer + second;
+                    }
+                    else if (current_pointer + second - ArrayMax > 0)
+                    {
+                        queue_index = current_pointer + second - ArrayMax;
+                    }
+                }
+                else
+                {
+                    cycle = 0;
+                    queue_index = current_pointer + second;
+                }
+                index = queue_index;
             }
-            else
+            catch (Exception e)
             {
-                cycle = 0;//小于周期数则不需要到下一轮
-                queue_index = current_pointer + second;
+                Console.WriteLine(e);
+                throw;
             }
-            index = queue_index;
         }
 
         /// <summary>
@@ -152,32 +158,40 @@ namespace DelayMessageApp.Achieves.Base
         /// </summary>
         private void RightMovePointer()
         {
-            if (GetPointer() >= ArrayMax - 1)
+            try
             {
-                ReSetPointer();
-            }
-            else
-            {
-                Interlocked.Increment(ref _pointer);
-            }
-            
-            var pointer = GetPointer();
-            var taskCollection = ArraySlot[pointer];
-            if (taskCollection == null || taskCollection.Count == 0) return;
-
-            Parallel.ForEach(taskCollection, (BaseTask<T> task) =>
-            {
-                if (task.Cycle > 0)
+                if (GetPointer() >= ArrayMax - 1)
                 {
-                    task.SubCycleNumber();
+                    ReSetPointer();
+                }
+                else
+                {
+                    Interlocked.Increment(ref _pointer);
                 }
 
-                if (task.Cycle <= 0)
+                var pointer = GetPointer();
+                var taskCollection = ArraySlot[pointer];
+                if (taskCollection == null || taskCollection.Count == 0) return;
+
+                Parallel.ForEach(taskCollection, (BaseTask<T> task) =>
                 {
-                    taskCollection.TryTake(out task);
-                    task.TaskAction(task.Data);
-                }
-            });
+                    if (task.Cycle > 0)
+                    {
+                        task.SubCycleNumber();
+                    }
+
+                    if (task.Cycle <= 0)
+                    {
+                        taskCollection.TryTake(out task);
+                        task.TaskAction(task.Data);
+                    }
+                });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }
