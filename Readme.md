@@ -1,6 +1,6 @@
 <div align="center">
  <a href="https://github.com/MahApps/MahApps.Metro">
-    <img alt="MahApps.Metro" width="220" heigth="220" src="https://user-images.githubusercontent.com/658431/30968270-0e3a855e-a45f-11e7-862b-8d92ebd301ad.png">
+    <img alt="MahApps.Metro" width="220" heigth="220" src="https://github.com/JusterZhu/JusterCodeLab/blob/master/img/logo.png?raw=true">
   </a>
   <h1>Juster-CodeLab</h1>
   <p>This project is used to record personal technical experience and technology sharing.</p>
