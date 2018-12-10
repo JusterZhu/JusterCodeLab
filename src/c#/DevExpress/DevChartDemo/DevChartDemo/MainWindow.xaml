@@ -1,0 +1,99 @@
+﻿<Window
+    x:Class="DevChartDemo.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/charts"
+    xmlns:local="clr-namespace:DevChartDemo"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="MainWindow"
+    Width="525"
+    Height="350"
+    mc:Ignorable="d">
+    <Window.DataContext>
+        <local:MainWindowViewModel />
+    </Window.DataContext>
+    <Window.Resources>
+        <local:TimeAxisConverter x:Key="TimeAxisConverter" />
+        <DataTemplate x:Key="XAxisTemplate">
+            <ContentPresenter Content="{Binding Path=Content, Converter={StaticResource TimeAxisConverter}}" />
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <dxc:ChartControl CrosshairEnabled="True" DataSource="{Binding ChartCollection}">
+            <dxc:XYDiagram2D>
+                <dxc:XYDiagram2D.AxisY>
+                    <dxc:AxisY2D
+                        GridLinesVisible="False"
+                        Interlaced="False"
+                        TickmarksLength="1"
+                        TickmarksMinorVisible="False">
+                        <dxc:AxisY2D.NumericScaleOptions>
+                            <dxc:ContinuousNumericScaleOptions
+                                AutoGrid="False"
+                                GridOffset="0"
+                                GridSpacing="10" />
+                        </dxc:AxisY2D.NumericScaleOptions>
+                        <dxc:AxisY2D.WholeRange>
+                            <dxc:Range dxc:AxisY2D.AlwaysShowZeroLevel="False" SideMarginsValue="0.01" />
+                        </dxc:AxisY2D.WholeRange>
+                    </dxc:AxisY2D>
+                </dxc:XYDiagram2D.AxisY>
+                <dxc:XYDiagram2D.AxisX>
+                    <dxc:AxisX2D GridLinesVisible="True" TickmarksMinorVisible="True">
+                        <dxc:AxisX2D.Label>
+                            <dxc:AxisLabel ElementTemplate="{StaticResource XAxisTemplate}" />
+                        </dxc:AxisX2D.Label>
+                        <dxc:AxisX2D.WholeRange>
+                            <dxc:Range
+                                MaxValue="40"
+                                MinValue="0"
+                                SideMarginsValue="0" />
+                        </dxc:AxisX2D.WholeRange>
+                        <dxc:AxisX2D.NumericScaleOptions>
+                            <dxc:ContinuousNumericScaleOptions
+                                AutoGrid="False"
+                                GridOffset="0"
+                                GridSpacing="10" />
+                        </dxc:AxisX2D.NumericScaleOptions>
+                    </dxc:AxisX2D>
+                </dxc:XYDiagram2D.AxisX>
+                <dxc:XYDiagram2D.Series>
+                    <dxc:LineSeries2D
+                        ArgumentDataMember="Date"
+                        Brush="#F96E48"
+                        ValueDataMember="Price">
+                        <dxc:LineSeries2D.LineStyle>
+                            <dxc:LineStyle Thickness="1" />
+                        </dxc:LineSeries2D.LineStyle>
+                        <dxc:LineSeries2D.CrosshairLabelTemplate>
+                            <DataTemplate>
+                                <Grid UseLayoutRounding="True">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="70" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        HorizontalAlignment="Left"
+                                        Text="股票价格" />
+                                    <TextBlock
+                                        Grid.Row="0"
+                                        Grid.Column="1"
+                                        Margin="3,2,3,2"
+                                        VerticalAlignment="Center"
+                                        FontWeight="Bold"
+                                        Text="{Binding SeriesPoint.Tag.Price}"
+                                        TextAlignment="Right" />
+                                </Grid>
+                            </DataTemplate>
+                        </dxc:LineSeries2D.CrosshairLabelTemplate>
+                    </dxc:LineSeries2D>
+                </dxc:XYDiagram2D.Series>
+            </dxc:XYDiagram2D>
+        </dxc:ChartControl>
+    </Grid>
+</Window>
