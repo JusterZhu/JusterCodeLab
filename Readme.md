@@ -23,7 +23,7 @@
 </br>
   <li>
     Solution:DevChartDemo</br>
-	Path:https://github.com/JusterZhu/JusterCodeLab/tree/master/src/c%23/DevExpress/DevChartDemo
+    Path:<a>https://github.com/JusterZhu/JusterCodeLab/tree/master/src/c%23/DevExpress/DevChartDemo</a></br>
     DevExpress: Display a stock time-sharing chart using DevExpress.
   </li>
 </ol>
