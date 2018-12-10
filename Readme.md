@@ -34,7 +34,7 @@
 <div>
     <p>1.Solution:DelayMessageApp</p>
     <img alt="MahApps.Metro" width="805" heigth="260" src="https://github.com/JusterZhu/JusterCodeLab/blob/master/img/delay_message_app.png?raw=true">
-
+ </br>
     <p>2.Solution:DevChartDemo</p>
     <img alt="MahApps.Metro" width="498" heigth="290" src="https://github.com/JusterZhu/JusterCodeLab/blob/master/img/dev_chart_demo.png?raw=true">
 </div>
